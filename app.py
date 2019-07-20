@@ -49,15 +49,6 @@ def is_populated(lst, index):
         return False
     return True
 
-def init_db(option1, option2):
-    os.system('nul > votes.db')
-    db.create_all()
-    option = Vote_option(name=option1)
-    other_option = Vote_option(name=option2)
-    db.session.add(option)
-    db.session.add(other_option)
-    db.session.commit()
-
 @app.route('/')
 def index():
     total_votes = db.session.query(Vote).count()
@@ -103,5 +94,4 @@ def submit_vote():
         return redirect(url_for('index'))
 
 if __name__ == "__main__":
-    init_db("Donald Trump", "Hillary Clinton")
     app.run(debug=True)
