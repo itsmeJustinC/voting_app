@@ -1,0 +1,30 @@
+@font-face {
+    font-family: "alarmClock";
+    src: url("../fonts/digital-7.ttf");
+  }
+
+.timer {
+    text-align: center;
+    position: relative;
+    font-size: 5rem;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    color: #aa0000;
+    font-family: alarmClock;
+}
+
+.vs-text {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-25%, -50%);
+    font-size: 100px;
+    font-family: papyrus;
+}
+
+.bar-text {
+    font-weight: bold;
+    font-size: 25px;
+}

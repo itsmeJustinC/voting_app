@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel= "stylesheet" type= "text/css" href="{{ url_for('static', filename='styles/style.css') }}">
+    <title>The Presidential Debate</title>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <ul>
+                            {% for category, message in messages %}
+                                <div class="text-center alert alert-{{ category }}">{{ message }}</div>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="border" style="height: 100px; background-color: gray">
+                    <h1 id="timer" class="timer"></h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <form method="POST" action="{{ url_for('submit_vote') }}">
+            <div class="row">
+                <input type="hidden" name="timerState" id="timerState">
+                <div class="col">
+                    <div class="float-left">
+                        <div class="form-group">
+                            <div class="radio col-sm-offset-2 col-sm-10">
+                                <label class="radio-inline">
+                                    <input type="radio" value="{{ options[0].name }}" name="person" required>
+                                    {{ options[0].name }}
+                                </label>
+                            </div>
+                        </div>
+                        <div style="border-style: solid; border-width: 4px; border-color: #dc3545">
+                            <img width="300" height=300" src="{{ url_for('static', filename='img/'~options[0].name~'.jpg') }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="vs-text">
+                        <p>VS</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="float-right">
+                        <div class="form-group">
+                            <div class="radio col-sm-offset-2 col-sm-10">
+                                <label class="radio-inline">
+                                    <input type="radio" value="{{ options[1].name }}" name="person" required>
+                                    {{ options[1].name }}
+                                </label>
+                            </div>
+                        </div>
+                        <img style="border-style: solid; border-width: 4px; border-color: #007bff" width="300" height=300" src="{{ url_for('static', filename='img/'~options[1].name~'.jpg') }}">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group mx-auto">
+                    <input id="submit-button" class="btn btn-success" value="Cast Vote" type="submit">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="container">
+        {% if total_votes %}
+            <div class="row">
+                <div class="progress" style="width: 100%; height: 40px;">
+                        <div class="progress-bar bar-text bg-danger" role="progressbar" aria-valuenow="{{ vote_counts[0] }}"
+                        aria-valuemin="0" aria-valuemax="{{ total_votes }}"style="width:{{ vote_counts[0] * 100/total_votes }}%">{{ (vote_counts[0] * 100/total_votes)|round(2) }}%</div>
+
+                        <div class="progress-bar bg-primary bar-text" role="progressbar" aria-valuenow="{{ vote_counts[1] }}"
+                        aria-valuemin="0" aria-valuemax="{{ total_votes }}"style="width:{{ vote_counts[1] * 100/total_votes }}%">{{ (vote_counts[1] * 100/total_votes)|round(2) }}%</div>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col text-center">
+                    <h3>Total Votes: {{ total_votes }}</h3>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+    
+    var deadline = new Date("Jul 20, 2019 19:40:00").getTime(); 
+    var x = setInterval(function() { 
+    var now = new Date().getTime(); 
+    var t = deadline - now; 
+    var days = Math.floor(t / (1000 * 60 * 60 * 24)); 
+    var hours = Math.floor((t%(1000 * 60 * 60 * 24))/(1000 * 60 * 60)); 
+    var minutes = Math.floor((t % (1000 * 60 * 60)) / (1000 * 60)); 
+    var seconds = Math.floor((t % (1000 * 60)) / 1000); 
+    document.getElementById("timer").innerHTML = days + " : "  
+    + hours + " : " + minutes + " : " + seconds; 
+        if (t < 0) { 
+            clearInterval(x); 
+            document.getElementById("timer").innerHTML = "EVENT EXPIRED";
+            document.getElementById('timerState').value = ''; 
+        } else {
+            document.getElementById('timerState').value = true;
+        } 
+    }, 1000); 
+
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+</body>
+</html>
